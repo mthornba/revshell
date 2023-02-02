@@ -43,6 +43,7 @@ runner@fv-az249-465:~/work/revshell/revshell$
 
 To upgrade the terminal to a full tty:
 1. Spawn a pty using,
+
    `python`
    ```bash
    python -c "import pty;pty.spawn('/bin/bash')"
@@ -65,9 +66,11 @@ To upgrade the terminal to a full tty:
    stty rows ## cols ##
    reset
    ```
-4. Do your work in the
-stty "$save_state"
-```
+4. Do your work in the reverse shell
+5. After exiting the reverse shell, reload original terminal settings
+   ```bash
+   stty "$save_state"
+   ```
 
 ## Local Testing with `act`
 
